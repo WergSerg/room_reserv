@@ -8,24 +8,25 @@ try:
     import configparser
 except ImportError:
     import ConfigParser as configparser
+    
+config = configparser.ConfigParser()
+config.read("settings.ini")    
+server_log = config.get("Settings", "Login")
+server_pass = config.get("Settings", "pass")
 
 def make_connect():
-    engine = create_engine('postgresql+psycopg2://postgres:Werserg2294@127.0.0.1:5433/conference_room',pool_pre_ping=True)
+    engine = create_engine('postgresql+psycopg2://{}:{}@127.0.0.1:5433/conference_room'.format(server_log,server_pass),pool_pre_ping=True)
     connection = engine.connect()
     return connection, engine
 
 
 
-config = configparser.ConfigParser()
-config.read("settings.ini")
+
 app = Flask(__name__)
 
-host = config.get("Settings", "host")
+
 Login = ''
 role = ''
-from_addrq = config.get("Settings", "from_addr")
-users = [("login",'passw','1')]
-
 metadata = MetaData(bind=make_connect()[1])
 
 Base = declarative_base()
